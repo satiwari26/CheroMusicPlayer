@@ -6,6 +6,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RecyclerListView } from 'recyclerlistview';
 import { LayoutProvider } from 'recyclerlistview';
+import AudioListItem from '../components/AudioListItem';
+import color from '../misc/color';
 
 export default class AudioList extends Component {
   static contextType = AudioContext;
@@ -21,10 +23,7 @@ export default class AudioList extends Component {
 
   rowRenderer = (type, item) => {
     return(
-      <View style={{height: 70, width: '100%', justifyContent: 'center', paddingLeft: 10}}>
-        <Text>{item.filename}</Text>
-        <Text>{item.duration}</Text>
-      </View>
+      <AudioListItem title={item.filename} duration={item.duration} onPressOptions= {()=>{console.log(`option pressed for ${item.filename}`)}}/>
     )
   }
 
@@ -34,11 +33,14 @@ export default class AudioList extends Component {
       <AudioContext.Consumer>
         {({dataProvider, })=>{
           return(
-            <RecyclerListView 
-              dataProvider={dataProvider}
-              layoutProvider={this.layoutProvider}
-              rowRenderer={this.rowRenderer}
-            />
+            <View style={styles.container}>
+              <RecyclerListView 
+                style={{ width: '100%', height: '100%' }}
+                dataProvider={dataProvider}
+                layoutProvider={this.layoutProvider}
+                rowRenderer={this.rowRenderer}
+              />
+            </View>
           )
         }}
       </AudioContext.Consumer>
@@ -47,9 +49,10 @@ export default class AudioList extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: color.primaryDarkBlue,
+  }
 });

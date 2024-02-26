@@ -3,30 +3,68 @@ import React, { Component } from 'react'
 import { Entypo } from '@expo/vector-icons';
 import color from '../misc/color';
 
-export default class AudioListItem extends Component {
-  render() {
+/**
+ * 
+ * @param {*} filename 
+ * @returns the first letter of the filename
+ */
+const getThumbnailText = (filename) => filename[0].toUpperCase();
+
+/**
+ * @brief
+ * converts the time in more readable format for the users
+ * @param {*} minutes 
+ * @returns 
+ */
+const convertTime = minutes => {
+    if (minutes) {
+        const hrs = minutes / 60;
+        const minute = hrs.toString().split('.')[0];
+        const percent = parseInt(hrs.toString().split('.')[1].slice(0, 2));
+        const sec = Math.ceil((60 * percent) / 100);
+        if (parseInt(minute) < 10 && sec < 10) {
+            return `0${minute}:0${sec}`;
+        }
+        if (parseInt(minute) < 10) {
+            return `0${minute}:${sec}`;
+        }
+        if (sec < 10) {
+            return `${minute}:0${sec}`;
+        }
+        return `${minute}:${sec}`;
+    }
+    return '00:00';
+}
+
+/**
+ * 
+ * @param {*} {title, duration}
+ * @returns redenders the file name and duration of the audio file
+ */
+export default function AudioListItem({title, duration, onPressOptions}) {
     return (
         <>
         <View style = {styles.container}>
         {/* creting the left container */}
             <View style={styles.leftContainer}>
                 <View style={styles.thumbnail}>
-                    <Text style={styles.thumbnailText}>A</Text>
+                    <Text style={styles.thumbnailText}>{getThumbnailText(title)}</Text>
                 </View>
                 <View style={styles.titleContainer}>
-                    <Text numberOfLines={1} style={styles.title}>hello world this is something new that we need to make the cganbgfe</Text>
-                    <Text style={styles.timeText}> 03:59</Text>
+                    <Text numberOfLines={1} style={styles.title}>{title}</Text>
+                    <Text style={styles.timeText}>{convertTime(duration)}</Text>
                 </View>
             </View>
             {/* creating the right container */}
             <View style={styles.rightContainer}>
-                <Entypo name="dots-three-vertical" size={20} color={color.primaryLightBlue} />
+                <Entypo 
+                onPress={onPressOptions}
+                name="dots-three-vertical" size={20} color={color.primaryLightBlue} />
             </View>
         </View>
         <View style={styles.seperator}/>
         </>
     )
-  }
 }
 
 const width = Dimensions.get('window').width;
