@@ -11,6 +11,8 @@ export default {
     secondaryLimeGreen: '#7CFC00',
     tertiaryLimeGreen: '#ADFF2F',
 
+    ModalBG: 'rgba(0, 0, 0, 0.5)',
+
     white: '#FFFFFF',
     lightGray: '#F6F6F6',
     gray: '#C4C4C4',

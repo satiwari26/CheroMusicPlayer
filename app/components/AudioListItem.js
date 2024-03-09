@@ -1,7 +1,9 @@
-import { Text, View, StyleSheet, Dimensions } from 'react-native'
+import { Text, View, StyleSheet, Dimensions, TouchableWithoutFeedback } from 'react-native'
 import React, { Component } from 'react'
 import { Entypo } from '@expo/vector-icons';
 import color from '../misc/color';
+import { FontAwesome } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 /**
  * 
@@ -36,30 +38,45 @@ const convertTime = minutes => {
     return '00:00';
 }
 
+const renderPlayPauseIcon = (isPlaying) => {
+    if (isPlaying) {
+        return(<MaterialIcons name="motion-photos-pause" size={45}/>);
+    }
+
+    return(<FontAwesome name="play-circle" size={45}/>);
+}
+
 /**
  * 
  * @param {*} {title, duration}
  * @returns redenders the file name and duration of the audio file
  */
-export default function AudioListItem({title, duration, onPressOptions}) {
+export default function AudioListItem({title, duration, onPressOptions, onAudioPress, isPlaying, activeListItem}) {
     return (
         <>
         <View style = {styles.container}>
         {/* creting the left container */}
-            <View style={styles.leftContainer}>
-                <View style={styles.thumbnail}>
-                    <Text style={styles.thumbnailText}>{getThumbnailText(title)}</Text>
+            <TouchableWithoutFeedback onPress={onAudioPress}>
+                <View style={styles.leftContainer}>
+                    <View style={styles.thumbnail}>
+                        <Text style={styles.thumbnailText}>
+                        {activeListItem ? renderPlayPauseIcon(isPlaying) : getThumbnailText(title)}
+                        </Text>
+                    </View>
+                    <View style={styles.titleContainer}>
+                        <Text numberOfLines={1} style={styles.title}>{title}</Text>
+                        <Text style={styles.timeText}>{convertTime(duration)}</Text>
+                    </View>
                 </View>
-                <View style={styles.titleContainer}>
-                    <Text numberOfLines={1} style={styles.title}>{title}</Text>
-                    <Text style={styles.timeText}>{convertTime(duration)}</Text>
-                </View>
-            </View>
+            </TouchableWithoutFeedback>
             {/* creating the right container */}
             <View style={styles.rightContainer}>
                 <Entypo 
                 onPress={onPressOptions}
-                name="dots-three-vertical" size={20} color={color.primaryLightBlue} />
+                name="dots-three-vertical" 
+                size={20} 
+                color={color.primaryLightBlue}
+                style={{padding: 10}} />
             </View>
         </View>
         <View style={styles.seperator}/>
@@ -72,7 +89,7 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignSelf: 'center',
-        width: width - 80,
+        width: width - 40,
         backgroundColor: color.primaryDarkBlue,
         padding: 10,
     },

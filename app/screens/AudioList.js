@@ -2,15 +2,25 @@ import { View, Text } from 'react-native'
 import { StyleSheet, Dimensions } from 'react-native'
 import React, {Component} from 'react'
 import { AudioContext } from '../context/AudioProvider';
-import { ScrollView } from 'react-native-gesture-handler';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { RecyclerListView } from 'recyclerlistview';
 import { LayoutProvider } from 'recyclerlistview';
 import AudioListItem from '../components/AudioListItem';
 import color from '../misc/color';
+import OptionModel from '../components/OptionModel';
+import {Audio} from 'expo-av';
+import {newAudio, pause, play, resume} from '../misc/AudioController';
 
 export default class AudioList extends Component {
   static contextType = AudioContext;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      optionModalVisible: false,
+    };
+
+    this.currentItem = {};
+  }
 
   layoutProvider = new LayoutProvider((i) => {
     return('audio');
@@ -21,9 +31,45 @@ export default class AudioList extends Component {
     }
   )
 
-  rowRenderer = (type, item) => {
+  handleAudioPress = async (audio) => {
+    const {playBackObject, soundObj, currentAudio, updateState, audioFiles} = this.context;
+    //initial audio play
+    if(soundObj === null) {
+      const playBackObject = new Audio.Sound();
+      const status = await play(playBackObject, audio.uri);
+      const index = audioFiles.indexOf(audio);
+      return updateState(this.context, {playBackObject: playBackObject, currentAudio: audio, soundObj: status, isPlaying: true, currentAudioIndex: index});
+    }
+
+    // If a different audio file is clicked
+    if (soundObj.isLoaded && currentAudio.id !== audio.id) {
+      const status = await newAudio(playBackObject, audio.uri);
+      const index = audioFiles.indexOf(audio);
+      return updateState(this.context, {currentAudio: audio, soundObj: status, isPlaying: true, currentAudioIndex: index});
+    }
+
+    //pause the audio on clicling it again
+    if(soundObj.isLoaded && soundObj.isPlaying && currentAudio.id === audio.id) {
+      const status = await pause(playBackObject);
+      return updateState(this.context, {soundObj: status, isPlaying: false});
+    }
+
+    //resume the audio on clicling it again
+    if(soundObj.isLoaded && !soundObj.isPlaying && currentAudio.id === audio.id) {
+      const status = await resume(playBackObject);
+      return updateState(this.context, {soundObj: status, isPlaying: true});
+    }
+  };
+
+  rowRenderer = (type, item, index, extendedState) => {
     return(
-      <AudioListItem title={item.filename} duration={item.duration} onPressOptions= {()=>{console.log(`option pressed for ${item.filename}`)}}/>
+      <AudioListItem title={item.filename} duration={item.duration}
+      isPlaying={extendedState.isPlaying}
+      activeListItem={this.context.currentAudioIndex === index}
+      onAudioPress={()=>{this.handleAudioPress(item)}}
+       onPressOptions= {()=>{
+        this.currentItem = item;
+        this.setState({...this.state, optionModalVisible: true})}}/>
     )
   }
 
@@ -31,7 +77,7 @@ export default class AudioList extends Component {
 
     return(
       <AudioContext.Consumer>
-        {({dataProvider, })=>{
+        {({dataProvider, isPlaying })=>{
           return(
             <View style={styles.container}>
               <RecyclerListView 
@@ -39,7 +85,15 @@ export default class AudioList extends Component {
                 dataProvider={dataProvider}
                 layoutProvider={this.layoutProvider}
                 rowRenderer={this.rowRenderer}
+                extendedState={{isPlaying}}
               />
+              <OptionModel 
+              onDetailsPress={()=>{console.log('Details');}}
+              onPlayPress={()=>{console.log('Playing audio');}}
+              currentItem={this.currentItem} 
+              onClose={()=>{this.setState({...this.state, optionModalVisible: false})}} 
+              visible={this.state.optionModalVisible}/>
+
             </View>
           )
         }}
