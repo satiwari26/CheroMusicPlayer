@@ -18,8 +18,11 @@ export default class AudioProvider extends Component {
             soundObj: null,
             currentAudio: {},
             isPlaying: false,
-            currentAudioIndex: null
+            currentAudioIndex: null,
+            playbackPosition: null,
+            playbackDuration: null,
         }
+        this.totalAudioCount = 0;
     }
 
     permissionAlert = () => {
@@ -46,6 +49,7 @@ export default class AudioProvider extends Component {
             mediaType: 'audio',
             first: media.totalCount
         });
+        this.totalAudioCount = media.totalCount;
         
         this.setState({...this.state, dataProvider: dataProvider.cloneWithRows(
             [...audioFiles, ...media.assets]),
@@ -88,7 +92,7 @@ export default class AudioProvider extends Component {
     }
 
   render() {
-    const {audioFiles, dataProvider, permissionError, playBackObject, soundObj, currentAudio, isPlaying, currentAudioIndex} = this.state;
+    const {playbackDuration, playbackPosition ,audioFiles, dataProvider, permissionError, playBackObject, soundObj, currentAudio, isPlaying, currentAudioIndex} = this.state;
     if(permissionError){
         return (
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -97,7 +101,12 @@ export default class AudioProvider extends Component {
         )
     }
     return (
-        <AudioContext.Provider value={{audioFiles, dataProvider, playBackObject, soundObj, currentAudio, updateState: this.updateState, isPlaying, currentAudioIndex}}>
+        <AudioContext.Provider value={{audioFiles, dataProvider, playBackObject, 
+        soundObj, currentAudio, updateState: this.updateState, 
+        isPlaying, currentAudioIndex,
+        totalAudioCount: this.totalAudioCount,
+        playbackDuration, playbackPosition,
+        }}>
             {this.props.children}
         </AudioContext.Provider>
     )

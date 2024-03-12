@@ -31,6 +31,12 @@ export default class AudioList extends Component {
     }
   )
 
+  onPlaybackStatusUpdate = async (playbackStatus) => {
+    if(playbackStatus.isLoaded && playbackStatus.isPlaying) {
+      this.context.updateState(this.context, {playbackPosition: playbackStatus.positionMillis, playbackDuration: playbackStatus.durationMillis});
+    }
+  };
+
   handleAudioPress = async (audio) => {
     const {playBackObject, soundObj, currentAudio, updateState, audioFiles} = this.context;
     //initial audio play
@@ -38,7 +44,9 @@ export default class AudioList extends Component {
       const playBackObject = new Audio.Sound();
       const status = await play(playBackObject, audio.uri);
       const index = audioFiles.indexOf(audio);
-      return updateState(this.context, {playBackObject: playBackObject, currentAudio: audio, soundObj: status, isPlaying: true, currentAudioIndex: index});
+      updateState(this.context, {playBackObject: playBackObject, currentAudio: audio, soundObj: status, isPlaying: true, currentAudioIndex: index});
+      
+      return playBackObject.setOnPlaybackStatusUpdate(this.onPlaybackStatusUpdate);
     }
 
     // If a different audio file is clicked
