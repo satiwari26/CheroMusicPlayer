@@ -5,6 +5,7 @@ import { Entypo } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import PlayerButton from '../components/PlayerButton';
 import { AudioContext } from '../context/AudioProvider';
+import { pause, play, resume } from '../misc/AudioController';
 
 const { width } = Dimensions.get('window');
 
@@ -19,6 +20,27 @@ export default function Player() {
       return playbackPosition / playbackDuration;
     }
     return 0;
+  }
+
+  const handlePlayPause = async () => {
+    //play audio if not playing
+    if(context.soundObj === null) {
+      const audio = context.currentAudio;
+      const status = await play(context.playBackObject, audio.uri);
+      return context.updateState(context, {soundObj: status, isPlaying: true, currentAudio: audio, currentAudioIndex: context.currentAudioIndex});
+    }
+
+    //pause audio if playing
+    if(context.soundObj && context.soundObj.isPlaying) {
+      const status = await pause(context.playBackObject);
+      return context.updateState(context, {soundObj: status, isPlaying: false});
+    }
+
+    //resume audio if paused
+    if(context.soundObj && !context.soundObj.isPlaying) {
+      const status = await resume(context.playBackObject);
+      return context.updateState(context, {soundObj: status, isPlaying: true});
+    }
   }
 
   useEffect(() => {
@@ -45,7 +67,7 @@ export default function Player() {
         />
         <View style={styles.audioControllers}>
           <PlayerButton onPress={()=>{console.log("Hello world!");}} iconType='previous'/>
-          <PlayerButton iconType={context.isPlaying ? 'play' : 'pause'}/>
+          <PlayerButton onPress={handlePlayPause} iconType={context.isPlaying ? 'play' : 'pause'}/>
           <PlayerButton iconType='next'/>
         </View>
       </View>

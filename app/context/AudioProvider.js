@@ -4,6 +4,7 @@ import * as MediaLibrary from 'expo-media-library';
 import { Alert } from 'react-native';
 import { DataProvider } from 'recyclerlistview';
 import AsyncStorage  from '@react-native-async-storage/async-storage';
+import {Audio} from 'expo-av';
 
 export const AudioContext = createContext();
 export default class AudioProvider extends Component {
@@ -103,6 +104,9 @@ export default class AudioProvider extends Component {
 
     componentDidMount() {
         this.getPermission();
+        if(this.state.playBackObject === null) {
+            this.setState({...this.state, playBackObject: new Audio.Sound()});
+        }
     }
 
     updateState = (prevState, newState = {}) => {
