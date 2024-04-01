@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/cheroMusic.jpg",
         "backgroundColor": "#0D253F"
-      }
+      },
+      "package": "com.drew26.CheroMusic"
     },
     "web": {
       "favicon": "./assets/cheroMusic.jpg"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "272ead16-9220-4274-a6a6-d107aa02d44a"
+      }
     }
   }
 }

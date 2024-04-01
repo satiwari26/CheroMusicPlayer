@@ -2,7 +2,7 @@ import { View, Text, Modal, StatusBar, TouchableWithoutFeedback } from 'react-na
 import React from 'react'
 import color from '../misc/color';
 
-export default function OptionModel({visible, onClose, currentItem, onPlayPress, onDetailsPress }) {
+export default function OptionModel({visible, onClose, currentItem, onPlayPress, onPlayListPress }) {
     const { filename } = currentItem;
   return (
     <>
@@ -14,8 +14,8 @@ export default function OptionModel({visible, onClose, currentItem, onPlayPress,
                     <TouchableWithoutFeedback onPress={onPlayPress}>
                         <Text style={styles.option}>Play</Text>
                     </TouchableWithoutFeedback>
-                    <TouchableWithoutFeedback onPress={onDetailsPress}>
-                        <Text style={styles.option}>Details</Text>
+                    <TouchableWithoutFeedback onPress={onPlayListPress}>
+                        <Text style={styles.option}>Add to PlayList</Text>
                     </TouchableWithoutFeedback>
                 </View>
             </View>
