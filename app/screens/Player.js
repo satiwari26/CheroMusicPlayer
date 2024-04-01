@@ -28,6 +28,7 @@ export default function Player() {
     if(context.soundObj === null) {
       const audio = context.currentAudio;
       const status = await play(context.playBackObject, audio.uri);
+      context.playBackObject.setOnPlaybackStatusUpdate(context.onPlaybackStatusUpdate);
       return context.updateState(context, {soundObj: status, isPlaying: true, currentAudio: audio, currentAudioIndex: context.currentAudioIndex});
     }
 
@@ -73,7 +74,8 @@ export default function Player() {
       }
     }
 
-    context.updateState(context, {playBackObject: context.playBackObject, currentAudio: audio, soundObj: status, isPlaying: true, currentAudioIndex: index});
+    context.updateState(context, {playBackObject: context.playBackObject, currentAudio: audio, soundObj: status, isPlaying: true, currentAudioIndex: index,
+      playbackPosition: null, playbackDuration: null});
 
     storeAudioForNextOpening(audio, index);
   };
@@ -108,7 +110,8 @@ export default function Player() {
       }
     }
 
-    context.updateState(context, {playBackObject: context.playBackObject, currentAudio: audio, soundObj: status, isPlaying: true, currentAudioIndex: index});
+    context.updateState(context, {playBackObject: context.playBackObject, currentAudio: audio, soundObj: status, isPlaying: true, currentAudioIndex: index,
+      playbackPosition: null, playbackDuration: null});
 
     storeAudioForNextOpening(audio, index);
   };
