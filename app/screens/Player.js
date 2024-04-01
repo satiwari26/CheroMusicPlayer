@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import color from '../misc/color'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Entypo } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import PlayerButton from '../components/PlayerButton';
@@ -21,6 +21,10 @@ export default function Player() {
     return 0;
   }
 
+  useEffect(() => {
+    context.loadPreviousAudio();
+  }, []);
+  if(!context.currentAudio) return null;
 
   return (
     <View style={styles.container}>
