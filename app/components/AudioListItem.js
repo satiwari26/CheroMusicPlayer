@@ -79,7 +79,7 @@ export default function AudioListItem({title, duration, onPressOptions, onAudioP
                 style={{padding: 10}} />
             </View>
         </View>
-        <View style={styles.seperator}/>
+        {/* <View style={styles.seperator}/> */}
         </>
     )
 }
