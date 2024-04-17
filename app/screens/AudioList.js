@@ -122,7 +122,10 @@ export default class AudioList extends Component {
                 extendedState={{isPlaying}}
               />
               <OptionModel 
-              onPlayListPress={()=>{this.props.navigation.navigate('Chero Play List')}}
+              onPlayListPress={()=>{
+                this.context.updateState(this.context, {addToPlayList: this.currentItem})
+                this.props.navigation.navigate('Chero Play List')
+              }}
               onPlayPress={()=>{console.log('Playing audio');}}
               currentItem={this.currentItem} 
               onClose={()=>{this.setState({...this.state, optionModalVisible: false})}} 

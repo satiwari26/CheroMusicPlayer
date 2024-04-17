@@ -12,6 +12,8 @@ export default class AudioProvider extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            PlayList: [],
+            addToPlayList: null,
             audioFiles: [],
             permissionError: false,
             //rerender this recyclerlistview when the row1 != row2
@@ -139,7 +141,8 @@ export default class AudioProvider extends Component {
     }
 
   render() {
-    const {playbackDuration, playbackPosition ,audioFiles, dataProvider, permissionError, playBackObject, soundObj, currentAudio, isPlaying, currentAudioIndex} = this.state;
+    const {playbackDuration, playbackPosition ,audioFiles, dataProvider, permissionError, PlayList, addToPlayList,
+        playBackObject, soundObj, currentAudio, isPlaying, currentAudioIndex} = this.state;
     if(permissionError){
         return (
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -148,7 +151,8 @@ export default class AudioProvider extends Component {
         )
     }
     return (
-        <AudioContext.Provider value={{audioFiles, dataProvider, playBackObject, 
+        <AudioContext.Provider value={{audioFiles, dataProvider, playBackObject,
+        PlayList, addToPlayList, 
         soundObj, currentAudio, updateState: this.updateState, 
         isPlaying, currentAudioIndex,
         totalAudioCount: this.totalAudioCount,

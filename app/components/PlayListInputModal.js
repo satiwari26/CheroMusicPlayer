@@ -1,9 +1,22 @@
 import { View, Text, Modal, StyleSheet, TextInput, Dimensions, TouchableWithoutFeedback } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import color from '../misc/color';
 
 export default function PlayListInputModal({visible, onClose, onSubmit}) {
+
+    const [playListName, setPlayListName] = useState('');
+
+    const handleOnSubmit = () => {
+        if(playListName === '') {
+            onClose();
+        }
+        else{
+            onSubmit(playListName);
+            setPlayListName('');
+            onClose();
+        }
+    }
   return (
     <Modal visible={visible} animationType='fade' transparent>
         <View style={styles.modalContainer}>
@@ -12,9 +25,9 @@ export default function PlayListInputModal({visible, onClose, onSubmit}) {
             </TouchableWithoutFeedback>
             <View style={styles.inputContainer}>
                 <Text style={{color: color.tertiaryLightBlue, fontSize: 18, fontWeight: 'bold', paddingTop: 18}}>Enter the PlayList Name</Text>
-                <TextInput style={styles.input}/>
+                <TextInput value={playListName} onChangeText={(text) => {setPlayListName(text)}} style={styles.input}/>
                 <Ionicons name="checkmark-done" size={28} color={color.secondaryLightBlue} style = {styles.submitIcon}
-                onPress={onSubmit}
+                onPress={handleOnSubmit}
                 />
             </View>
         </View>
