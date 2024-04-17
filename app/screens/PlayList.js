@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Alert } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import color from '../misc/color';
 import PlayListInputModal from '../components/PlayListInputModal.js';
@@ -41,9 +41,7 @@ export default function PlayList() {
           title: 'My Favorite',
           audioFiles: [],
         };
-        console.log(defaultPlayList);
         const newPlayList = [...PlayList,defaultPlayList];
-        console.log(newPlayList);
         updateState(context, {PlayList: [...newPlayList]});
         return await AsyncStorage.setItem('playList', JSON.stringify(newPlayList));
       }
@@ -57,15 +55,48 @@ export default function PlayList() {
       }
     },[PlayList]);
 
-    useEffect(() => {
-      console.log(PlayList);
-    }, [PlayList]);
+    const handleBannerPress = async (playlist) => {
+      if(addToPlayList){
+        const result = await AsyncStorage.getItem('playList');
+
+        let oldList = [];
+        let updatedList = [];
+        let sameAudio = false;
+
+        if(result !== null){
+          oldList = JSON.parse(result);
+          updatedList = oldList.filter(list => {
+            if(list.id === playlist.id){
+              for(let audio of list.audioFiles){  //if the audio preexisted in the playlist
+                if(audio.id === addToPlayList.id){
+                  sameAudio = true;
+                  return;
+                }
+              }
+
+              list.audioFiles = [...list.audioFiles, addToPlayList];
+            }
+
+            return list;
+          });
+        }
+        if(sameAudio){
+          Alert.alert(`Audio: ${playlist.audioFiles} already exists in the playlist!`);
+          sameAudio = false;
+          return updateState(context, {addToPlayList: null});
+        }
+
+        updateState(context, {PlayList: updatedList, addToPlayList: null});
+        return AsyncStorage.setItem('playList', JSON.stringify([...updatedList]));
+      }
+      
+    };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
 
       {PlayList.length ? PlayList.map(playlist =>       
-      <TouchableOpacity key={playlist.id.toString()} style={styles.playListBanner}>
+      <TouchableOpacity key={playlist.id.toString()} style={styles.playListBanner} onPress={() => handleBannerPress(playlist)}>
         <Text style={styles.playListheaderstyle}>{playlist.title}</Text>
         <Text style = {styles.audioCount}>{playlist.audioFiles.length > 1 ? `${playlist.audioFiles.length} Songs` : `${playlist.audioFiles.length} Song`}</Text>
       </TouchableOpacity>

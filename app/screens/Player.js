@@ -129,7 +129,7 @@ export default function Player() {
     {/* need to make sure it is rendering 0 if no song is initially played */}
       <Text style = {styles.audioCount}>{`${context.currentAudioIndex == null ? 0 : context.currentAudioIndex + 1} / ${context.totalAudioCount}`}</Text>
       <View style={styles.midBannerContainer}>
-        <Entypo name="folder-music" size={300} color={context.isPlaying ? color.secondaryLightBlue : color.primaryLightBlue} />
+        <Entypo name="folder-music" size={width - 50} color={context.isPlaying ? color.secondaryLightBlue : color.primaryLightBlue} />
       </View>
       <View style={styles.audioPlayerContainer}>
         <Text numberOfLines={1} style={styles.audioTitle}>{context.currentAudio.filename}</Text>
@@ -142,9 +142,9 @@ export default function Player() {
           maximumTrackTintColor={color.tertiaryLightBlue}
         />
         <View style={styles.audioControllers}>
-          <PlayerButton onPress={handlePrev} iconType='previous'/>
-          <PlayerButton onPress={handlePlayPause} iconType={context.isPlaying ? 'play' : 'pause'}/>
-          <PlayerButton iconType='next' onPress={handleNext}/>
+          <PlayerButton onPress={handlePrev} iconType='previous' size={width/5}/>
+          <PlayerButton onPress={handlePlayPause} iconType={context.isPlaying ? 'play' : 'pause'} size={width/5}/>
+          <PlayerButton iconType='next' onPress={handleNext} size={width/5}/>
         </View>
       </View>
     </View>
