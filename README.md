@@ -14,8 +14,6 @@
 - **screens**: Different screens component.
 
 ## prototype image
-![Screen App](./assets/screen2App.png)
-![Screen App2](./assets/screenApp.png)
 
 ## License
 This project is licensed under the terms of the [MIT License](./LICENSE) - see the [LICENSE.txt](./LICENSE) file for details.
